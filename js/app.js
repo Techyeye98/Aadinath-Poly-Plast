@@ -362,12 +362,10 @@ function splash() {
   el.className = "splash"; el.setAttribute("role", "img"); 
   el.innerHTML = `<div class="nebula"></div><canvas></canvas>
     <div class="stage"><div class="aura"></div><img class="murti" alt="" src="${CONFIG.splashImage}"><div class="floor"></div></div>
-    <button class="skip">Skip</button>${CONFIG.splashSound ? `<button class="snd" aria-label="Sound on or off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="w" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path class="x" d="m16 9 6 6m0-6-6 6"/></svg></button>` : ""}`;
+    <button class="skip">Skip</button>`;
   el.setAttribute("aria-label", "Aadinath Poly Plast");
   document.body.appendChild(el);
   const music = CONFIG.splashSound ? Tune.start() : null;
-  const snd = el.querySelector(".snd");
-  const sync = () => snd?.classList.toggle("off", !!music?.muted());
   let wasPlaying = false;
   let timer = null;
   el.addEventListener("pointerdown", (e) => {
@@ -375,11 +373,6 @@ function splash() {
     // sound starts on this touch: keep the screen up long enough for the whole tune
     if (music && !wasPlaying && !e.target.closest(".skip")) { clearTimeout(timer); timer = setTimeout(() => done(), 5400); }
   }, true);
-  snd?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    if (!wasPlaying) music?.resume(); else music?.toggle(); // first tap only turns the sound on
-    sync();
-  });
   const cv = el.querySelector("canvas"), cx = cv.getContext("2d"), dpr = Math.min(devicePixelRatio || 1, 2);
   let W, H, raf, alive = true;
   const size = () => { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; };
