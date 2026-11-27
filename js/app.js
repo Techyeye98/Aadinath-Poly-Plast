@@ -366,7 +366,20 @@ function splash() {
   el.setAttribute("aria-label", "Aadinath Poly Plast");
   document.body.appendChild(el);
   const music = CONFIG.splashSound ? Tune.start() : null;
-  el.querySelector(".snd")?.addEventListener("click", (e) => { e.stopPropagation(); music?.toggle(); setTimeout(sync, 150); });
+  const snd = el.querySelector(".snd");
+  const sync = () => snd?.classList.toggle("off", !!music?.muted());
+  let wasPlaying = false;
+  let timer = null;
+  el.addEventListener("pointerdown", (e) => {
+    wasPlaying = !!music?.started();
+    // sound starts on this touch: keep the screen up long enough for the whole tune
+    if (music && !wasPlaying && !e.target.closest(".skip")) { clearTimeout(timer); timer = setTimeout(() => done(), 5400); }
+  }, true);
+  snd?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (!wasPlaying) music?.resume(); else music?.toggle(); // first tap only turns the sound on
+    sync();
+  });
   const cv = el.querySelector("canvas"), cx = cv.getContext("2d"), dpr = Math.min(devicePixelRatio || 1, 2);
   let W, H, raf, alive = true;
   const size = () => { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; };
@@ -388,17 +401,14 @@ function splash() {
     if (alive) raf = requestAnimationFrame(tick);
   };
   tick();
-  const done = () => { if (!alive) return; alive = false; el.classList.add("out"); music?.stop(); setTimeout(() => { cancelAnimationFrame(raf); el.remove(); }, 900); render(); };
-  const snd = el.querySelector(".snd");
-  const sync = () => snd?.classList.toggle("off", !(music?.started() && music?.on()));
-  setTimeout(sync, 300);
-  // phones block sound until the first touch: first tap turns the tune on, Skip always skips
+  const done = () => { if (!alive) return; alive = false; music?.stop(); el.classList.add("out"); setTimeout(() => { cancelAnimationFrame(raf); el.remove(); }, 900); render(); };
+  // phones that block sound until a touch: that first tap starts the tune instead of closing the screen
   el.addEventListener("click", (e) => {
     if (e.target.closest(".skip")) return done();
-    if (music && !music.started()) { music.resume(); setTimeout(sync, 200); return; }
+    if (music && !wasPlaying) return;
     done();
   });
-  setTimeout(done, CONFIG.splashMs);
+  timer = setTimeout(() => done(), CONFIG.splashMs);
 }
 
 $("#ver").textContent = CONFIG.version;
