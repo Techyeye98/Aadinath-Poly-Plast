@@ -168,7 +168,12 @@ function pageTop(title, lede) {
     <h1 class="rise">${title}</h1>${lede ? `<p class="rise" style="--d:1">${lede}</p>` : ""}</header>`;
 }
 function settings() {
-  return `<a class="btn block rise" style="--d:1;margin-bottom:12px" href="#edit">${ico("pencil")}Edit rates</a>`;
+  return `<a class="btn block rise" style="--d:1;margin-bottom:12px" href="#edit">${ico("pencil")}Edit rates</a>
+    <form class="card rise" style="--d:2" id="contact-form"><h3>Contact number</h3>
+      <div class="two"><div class="field"><label for="c-phone">Call</label><input class="input" id="c-phone" type="tel" inputmode="tel" value="${esc(data.contact.phone)}" required></div>
+        <div class="field"><label for="c-wa">WhatsApp</label><input class="input" id="c-wa" type="tel" inputmode="tel" value="${esc(data.contact.whatsapp)}" required></div></div>
+      <p class="hint" style="margin:-4px 0 12px">WhatsApp number with 91 in front, e.g. 918320855756</p>
+      <button class="btn ghost block">${ico("save")}Save number</button></form>`;
 }
 function oldSettings() {
   return `
@@ -306,6 +311,12 @@ document.addEventListener("submit", (e) => {
     if (!a.target) { toast("Type the price you want", "x"); $("#a-target").focus(); return; }
     if (!Store.user()) { pendingAlert = a; location.hash = "#login"; toast("Sign up free to save your alert", "circle-user-round"); return; }
     addAlert(a); render({ animate: false }); return;
+  }
+  if (f.id === "contact-form") {
+    const wa = $("#c-wa").value.replace(/\D/g, ""), ph = $("#c-phone").value.trim();
+    if (wa.length < 10 || ph.replace(/\D/g, "").length < 10) { toast("Check the number", "x"); return; }
+    data.contact = { phone: ph, whatsapp: wa.length === 10 ? "91" + wa : wa };
+    Store.save(data).then(() => { toast("Number saved", "check"); paintGlobal(); }).catch(() => toast("Not saved online. Check internet.", "triangle-alert")); return;
   }
   if (f.id === "settings-form") {
     data.contact = { phone: $("#c-phone").value.trim(), whatsapp: $("#c-wa").value.trim() };
