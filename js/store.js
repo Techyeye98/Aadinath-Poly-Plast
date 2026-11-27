@@ -9,7 +9,7 @@ const CONFIG = {
   splashMs: 5500,                    // opening screen shows on every open/refresh; tap skips
   adminPin: "1234",                  // DEMO ONLY. Real admin login moves to the backend.
   changeDay: 4,                      // rates usually change after 12 midnight on Thursday (0 = Sunday … 4 = Thursday)
-  version: "1.3.1",
+  version: "1.3.2",
   // Shared database. Paste the Firebase web config here (Firebase console > Project settings > Your apps).
   // While this is null, rates are saved only in this browser (demo mode, admin PIN above).
   firebase: null,

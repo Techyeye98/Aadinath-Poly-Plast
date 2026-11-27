@@ -360,7 +360,8 @@ setInterval(() => { if (route === "rates") { const w = $(".week"); const s = rat
 function splash() {
   const el = document.createElement("div");
   el.className = "splash"; el.setAttribute("role", "img"); 
-  el.innerHTML = `<div class="s-img" style="background-image:url('${CONFIG.splashImage}')"></div><div class="s-glow"></div><canvas></canvas>
+  el.innerHTML = `<div class="nebula"></div><canvas></canvas>
+    <div class="stage"><div class="aura"></div><img class="murti" alt="" src="${CONFIG.splashImage}"><div class="floor"></div></div>
     <button class="skip">Skip</button>${CONFIG.splashSound ? `<button class="snd" aria-label="Sound on or off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="w" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path class="x" d="m16 9 6 6m0-6-6 6"/></svg></button>` : ""}`;
   el.setAttribute("aria-label", "Aadinath Poly Plast");
   document.body.appendChild(el);
@@ -373,9 +374,12 @@ function splash() {
   const spr = document.createElement("canvas"); spr.width = spr.height = 32; const sc = spr.getContext("2d");
   const g = sc.createRadialGradient(16, 16, 0, 16, 16, 16); g.addColorStop(0, "rgba(255,240,200,1)"); g.addColorStop(.25, "rgba(255,200,110,.85)"); g.addColorStop(1, "rgba(255,170,60,0)");
   sc.fillStyle = g; sc.fillRect(0, 0, 32, 32);
-  const P = Array.from({ length: 55 }, () => ({ x: Math.random(), y: Math.random(), s: Math.random() * 5 + 2, v: Math.random() * .00045 + .00012, w: Math.random() * 6.28, dw: Math.random() * .03 + .008, a: Math.random() * .6 + .3 }));
+  const stars = Array.from({ length: 220 }, () => ({ x: Math.random(), y: Math.random(), r: Math.random() * 1.1 + .2, p: Math.random() * 6.28, s: Math.random() * .02 + .004 }));
+  const P = Array.from({ length: 45 }, () => ({ x: Math.random(), y: Math.random(), s: Math.random() * 5 + 2, v: Math.random() * .0004 + .0001, w: Math.random() * 6.28, dw: Math.random() * .03 + .008, a: Math.random() * .6 + .3 }));
   const tick = () => {
-    cx.clearRect(0, 0, W, H); cx.globalCompositeOperation = "lighter";
+    cx.clearRect(0, 0, W, H); cx.globalCompositeOperation = "source-over";
+    for (const st of stars) { if (!reduce) st.p += st.s; cx.globalAlpha = .25 + .6 * Math.abs(Math.sin(st.p)); cx.fillStyle = "#fff6e0"; cx.beginPath(); cx.arc(st.x * W, st.y * H, st.r * dpr, 0, 7); cx.fill(); }
+    cx.globalCompositeOperation = "lighter";
     for (const p of P) {
       if (!reduce) { p.y -= p.v; p.w += p.dw; if (p.y < -.03) { p.y = 1.03; p.x = Math.random(); } }
       const x = (p.x + Math.sin(p.w) * .006) * W, y = p.y * H, s = p.s * dpr;
