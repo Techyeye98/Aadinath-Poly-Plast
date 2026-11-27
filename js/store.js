@@ -4,12 +4,12 @@
    with calls to a shared database (Firebase / Supabase / own server). Nothing else changes. */
 
 const CONFIG = {
-  splashImage: "img/ganesh.webp",    // opening screen picture
+  splashImage: "img/ganesh-murti.webp",    // opening screen picture
   splashSound: true,                 // soft background tune on the opening screen
   splashMs: 5500,                    // opening screen shows on every open/refresh; tap skips
   adminPin: "1234",                  // DEMO ONLY. Real admin login moves to the backend.
   changeDay: 4,                      // rates usually change after 12 midnight on Thursday (0 = Sunday … 4 = Thursday)
-  version: "1.3.2",
+  version: "1.3.3",
   // Shared database. Paste the Firebase web config here (Firebase console > Project settings > Your apps).
   // While this is null, rates are saved only in this browser (demo mode, admin PIN above).
   firebase: null,
