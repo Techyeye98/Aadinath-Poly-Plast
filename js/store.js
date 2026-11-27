@@ -4,7 +4,8 @@
    with calls to a shared database (Firebase / Supabase / own server). Nothing else changes. */
 
 const CONFIG = {
-  splashImage: "img/bhagwan.webp",   // Aadinath Bhagwan, background removed (bhagwan.png is the full-quality copy)
+  splashImage: "img/ganesh.webp",    // opening screen picture
+  splashSound: true,                 // soft background tune on the opening screen
   splashMs: 5500,                    // opening screen shows on every open/refresh; tap skips
   adminPin: "1234",                  // DEMO ONLY. Real admin login moves to the backend.
   changeDay: 4,                      // rates usually change after 12 midnight on Thursday (0 = Sunday … 4 = Thursday)
@@ -16,7 +17,6 @@ const CONFIG = {
 
 const DEFAULT_DATA = {
   notice: [
-    "Rates change every Thursday after 12 midnight",
     "All sizes available",
     "Call or WhatsApp to book",
   ],
@@ -36,14 +36,13 @@ const DEFAULT_DATA = {
       ] },
   ],
   products: [
-    { id: "p1", title: "PP Woven Bags", body: "Strong polypropylene woven bags for grain, sugar, cement, fertiliser, feed and other bulk goods. Made in all sizes." },
     { id: "p2", title: "Flex Printed Bags", body: "Your brand name and design flex printed on the bag in 1, 2 or 3 colours." },
   ],
-  about: "Aadinath Poly Plast makes PP woven bags in all sizes, plain and flex printed.\nCheck this week's rates here any time, free. Call or WhatsApp us to place an order.",
+  about: "Aadinath Poly Plast makes bags in all sizes, plain and flex printed.\nCheck this week's rates here any time, free. Call or WhatsApp us to place an order.",
   updatedAt: null,
 };
 
-const KEY = "ap-data-v3", USER_KEY = "ap-user-v1", ALERT_KEY = "ap-alerts-v2";
+const KEY = "ap-data-v4", USER_KEY = "ap-user-v1", ALERT_KEY = "ap-alerts-v2";
 const read = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
 const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 

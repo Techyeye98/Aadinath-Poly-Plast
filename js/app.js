@@ -42,10 +42,10 @@ const prevLine = (i) => {
 };
 function board() {
   const n = Store.alerts().some((a) => a.hit && !a.seen);
-  return `<header class="board"><div class="b-top"><span class="b-line">Jai Jinendra</span>
+  return `<header class="board"><div class="b-top"><span class="b-line"></span>
       <div class="acts"><a class="ib" href="#alerts" aria-label="Rate alerts">${ico("bell")}${n ? '<i class="dot"></i>' : ""}</a>
         <a class="ib" data-wa href="#" aria-label="WhatsApp Ansh">${ico("whatsapp")}</a><a class="ib" data-tel href="#" aria-label="Call Ansh">${ico("phone")}</a></div></div>
-      <a class="name" href="#rates"><b>Aadinath Poly Plast</b><span>PP WOVEN BAGS</span></a></header>
+      <a class="name" href="#rates"><b>Aadinath Poly Plast</b></a></header>
     <div class="ticker" aria-label="Notice"><div class="ticker-track">${[...data.notice, ...data.notice].map((t, k) => `<span ${k >= data.notice.length ? 'aria-hidden="true"' : ""}>${esc(t)}</span>`).join("")}</div></div>`;
 }
 const tabs = (on) => `<nav class="tabs" data-on="${on}"><span class="tabs-pill" aria-hidden="true"></span>
@@ -54,13 +54,13 @@ const adminStrip = (label, to) => isAdmin() ? `<div class="admin rise" style="--
 function weekCard() {
   const w = rateWeek();
   if (!w) return `<div class="week rise" style="--d:1"><span class="cal"><small>RATES</small><b>–</b></span>
-      <div><div class="week-t">This week's rates</div><div class="week-d">Coming soon</div><div class="week-s">Rates change every Thursday after 12 midnight</div></div></div>`;
+      <div><div class="week-t">This week's rates</div><div class="week-d">Coming soon</div><div class="week-s">Rates will be updated shortly</div></div></div>`;
   const mon = w.from.toLocaleDateString("en-IN", { month: "short" }).toUpperCase();
   return `<div class="week rise ${w.stale ? "stale" : ""}" style="--d:1">
       <span class="cal"><small>${mon}</small><b>${w.from.getDate()}</b></span>
       <div><div class="week-t">${w.stale ? "Last week's rates" : "Rates valid for this week"}</div>
         <div class="week-d">${dShort(w.from)} – ${dShort(w.till)}</div>
-        <div class="week-s">${w.stale ? `Ended ${dDay(w.till)} night` : `From ${dDay(w.from)} till ${dDay(w.till)}, 11:59 PM`}</div></div>
+        <div class="week-s">${w.stale ? `Ended ${dDay(w.till)}` : `Valid from ${dDay(w.from)} to ${dDay(w.till)}`}</div></div>
       ${w.stale ? `<div class="stale-msg"><span>New rates are being updated. Call to confirm today's rate.</span><a class="btn sm" data-tel href="#">${ico("phone")}Call</a></div>` : ""}</div>`;
 }
 
@@ -74,13 +74,13 @@ const V = {
           <div class="r-price">${price(i)}</div></div>`).join("")}
         ${g.note ? `<div class="box-ok">${ico("badge-check")}${esc(g.note)}</div>` : ""}</section>`).join("");
     return `${board()}${tabs("rates")}${weekCard()}${adminStrip("Edit rates", "#edit")}${boxes}
-      <p class="fine rise" style="--d:6">${ico("info")}<span>Rates change every Thursday after 12 midnight. Final rate is confirmed at the time of booking.</span></p>
+      <p class="fine rise" style="--d:6">${ico("info")}<span>For the latest rate, please call or WhatsApp before booking.</span></p>
       <div class="row-btns rise" style="--d:7"><a class="btn wa" data-wa href="#">${ico("whatsapp")}Book on WhatsApp</a><button class="btn ghost" data-share>${ico("share-2")}Share rates</button></div>
       <a class="alert-cta rise" style="--d:8" href="#alerts"><span class="bi">${ico("bell-plus")}</span><span><b>Rate Alert</b><span>Get notified when a rate reaches your price</span></span>${ico("chevron-right")}</a>`;
   },
 
   products() {
-    return `${board()}${tabs("products")}${adminStrip("Edit info", "#edit-products")}
+    return `${board()}${tabs("products")}
       ${data.products.map((p, k) => `<article class="prod rise" style="--d:${2 + k}"><h3>${esc(p.title)}</h3>${esc(p.body).split(/\n+/).map((l) => `<p>${l}</p>`).join("")}</article>`).join("")}
       <div class="row-btns rise" style="--d:6"><a class="btn wa" data-wa href="#">${ico("whatsapp")}WhatsApp</a><a class="btn ghost" data-tel href="#">${ico("phone")}Call</a></div>`;
   },
@@ -150,35 +150,16 @@ const V = {
       const today = new Date();
       draft.rateDate = { from: iso(today), till: iso(nextChange(today)) }; // new rates start today by default
     }
-    return `${pageTop("Edit Rates", "Change prices, then save. Customers see them right away, with the date below.")}
+    return `${pageTop("Edit Rates", "Type the new prices and save. Customers see them right away.")}
       <div class="stack">
-        <section class="egroup rise" style="--d:1"><h3 style="font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green);margin-bottom:10px">Rates valid for</h3>
+        <section class="egroup rise" style="--d:1"><h3 class="eh">Rates valid for</h3>
           <div class="two"><div class="field"><label for="rd-from">From</label><input class="input" type="date" id="rd-from" value="${draft.rateDate.from}"></div>
-            <div class="field"><label for="rd-till">Till (Thursday)</label><input class="input" type="date" id="rd-till" value="${draft.rateDate.till}"></div></div>
-          <p class="hint" style="margin-top:-4px">Set automatically: today till the coming Thursday night. Change if needed.</p></section>
-        ${draft.groups.map((g, gi) => `<section class="egroup rise" style="--d:${2 + gi}">
-          <div class="two"><input class="input" aria-label="List name" value="${esc(g.title)}" data-g="${gi}" data-gf="title">
-            <input class="input" aria-label="Unit" value="${esc(g.unit)}" placeholder="Unit" data-g="${gi}" data-gf="unit"></div>
-          ${g.items.map((i, ii) => `<div class="erow"><input class="input" aria-label="Item name" value="${esc(i.name)}" data-g="${gi}" data-i="${ii}" data-f="name">
-            <input class="input price-in" aria-label="Price for ${esc(i.name)}" inputmode="decimal" placeholder="₹" value="${i.price ?? ""}" data-g="${gi}" data-i="${ii}" data-f="price">
-            <button class="del" type="button" aria-label="Remove ${esc(i.name)}" data-del-item="${gi}:${ii}">${ico("trash-2")}</button></div>`).join("")}
-          <input class="input" style="margin-bottom:8px" aria-label="Note" placeholder="Note (optional), e.g. All sizes available" value="${esc(g.note)}" data-g="${gi}" data-gf="note">
-          <div class="eacts"><button class="btn sm ghost" data-add-item="${gi}">${ico("plus")}Add row</button>
-            ${gi > 0 ? `<button class="btn sm danger" data-del-group="${gi}">${ico("trash-2")}<span>Remove list</span></button>` : ""}</div></section>`).join("")}
-        <button class="btn ghost block" data-add-group>${ico("plus")}Add new list</button>
+            <div class="field"><label for="rd-till">Till</label><input class="input" type="date" id="rd-till" value="${draft.rateDate.till}"></div></div>
+          <p class="hint" style="margin-top:-4px">Filled in for one week automatically. Change if needed.</p></section>
+        ${draft.groups.map((g, gi) => `<section class="egroup rise" style="--d:${2 + gi}"><h3 class="eh">${esc(g.title)} <small>${esc(g.unit)}</small></h3>
+          ${g.items.map((i, ii) => `<div class="erow"><label class="ename" for="p-${gi}-${ii}">${esc(i.name)}</label>
+            <input class="input price-in" id="p-${gi}-${ii}" inputmode="decimal" placeholder="₹" value="${i.price ?? ""}" data-g="${gi}" data-i="${ii}" data-f="price"></div>`).join("")}</section>`).join("")}
         <div class="savebar"><a class="btn ghost" href="#rates" data-cancel>Cancel</a><button class="btn" data-save="rates">${ico("save")}Save rates</button></div></div>`;
-  },
-
-  "edit-products"() {
-    if (!isAdmin()) return V.login();
-    draft ??= clone(data);
-    return `${pageTop("Edit Product Info")}
-      <div class="stack">${draft.products.map((p, pi) => `<section class="egroup rise" style="--d:${1 + pi}">
-          <div class="field"><label>Title</label><input class="input" value="${esc(p.title)}" data-p="${pi}" data-pf="title"></div>
-          <div class="field"><label>Details</label><textarea class="input" data-p="${pi}" data-pf="body">${esc(p.body)}</textarea></div>
-          <button class="btn sm danger" data-del-prod="${pi}">${ico("trash-2")}Remove</button></section>`).join("")}
-        <button class="btn ghost block" data-add-prod>${ico("plus")}Add product</button>
-        <div class="savebar"><a class="btn ghost" href="#products" data-cancel>Cancel</a><button class="btn" data-save="products">${ico("save")}Save</button></div></div>`;
   },
 };
 
@@ -187,7 +168,10 @@ function pageTop(title, lede) {
     <h1 class="rise">${title}</h1>${lede ? `<p class="rise" style="--d:1">${lede}</p>` : ""}</header>`;
 }
 function settings() {
-  return `<div class="two rise" style="--d:1;margin-bottom:12px"><a class="btn" href="#edit">${ico("pencil")}Edit rates</a><a class="btn ghost" href="#edit-products">${ico("package")}Product info</a></div>
+  return `<a class="btn block rise" style="--d:1;margin-bottom:12px" href="#edit">${ico("pencil")}Edit rates</a>`;
+}
+function oldSettings() {
+  return `
     <form class="card rise" style="--d:2" id="settings-form"><h3>Contact and notice</h3>
       <div class="two"><div class="field"><label for="c-phone">Call number</label><input class="input" id="c-phone" type="tel" value="${esc(data.contact.phone)}"></div>
         <div class="field"><label for="c-wa">WhatsApp</label><input class="input" id="c-wa" type="tel" value="${esc(data.contact.whatsapp)}"></div></div>
@@ -364,24 +348,13 @@ setInterval(() => { if (route === "rates") { const w = $(".week"); const s = rat
 /* ---------- opening screen ---------- */
 function splash() {
   const el = document.createElement("div");
-  el.className = "splash"; el.setAttribute("role", "img"); el.setAttribute("aria-label", "Jai Jinendra. Aadinath Poly Plast");
-  el.innerHTML = `<canvas></canvas><button class="skip">Skip</button>
-    <div class="stage"><div class="aura"></div>
-      <div class="m3d"><div class="tilt"><img class="murti" alt="" src="${CONFIG.splashImage}"><span class="shine" style="--src:url('${new URL(CONFIG.splashImage, location.href).href}')"></span></div></div>
-      <div class="floor"></div><img class="mirror" alt="" src="${CONFIG.splashImage}"></div>
-    <div class="s-words"><b>Jai Jinendra</b><span>Aadinath Poly Plast</span></div>`;
+  el.className = "splash"; el.setAttribute("role", "img"); 
+  el.innerHTML = `<div class="s-img" style="background-image:url('${CONFIG.splashImage}')"></div><div class="s-glow"></div><canvas></canvas>
+    <button class="skip">Skip</button>${CONFIG.splashSound ? `<button class="snd" aria-label="Sound on or off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="w" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path class="x" d="m16 9 6 6m0-6-6 6"/></svg></button>` : ""}`;
+  el.setAttribute("aria-label", "Aadinath Poly Plast");
   document.body.appendChild(el);
-  el.querySelector(".murti").addEventListener("error", () => { el.querySelector(".m3d").innerHTML = `<svg class="murti fallback"><use href="#seal"/></svg>`; el.querySelector(".mirror")?.remove(); });
-  // 3D: the murti turns gently toward the finger / mouse / phone tilt
-  const tilt = el.querySelector(".tilt"); let tx = 0, ty = 0, cx3 = 0, cy3 = 0, r3;
-  const aim = (x, y) => { tx = x; ty = y; };
-  el.addEventListener("pointermove", (e) => aim((e.clientX / innerWidth - .5) * 2, (e.clientY / innerHeight - .5) * 2));
-  const ori = (e) => aim(Math.max(-1, Math.min(1, (e.gamma || 0) / 25)), Math.max(-1, Math.min(1, ((e.beta || 45) - 45) / 25)));
-  addEventListener("deviceorientation", ori);
-  const loop3 = () => { cx3 += (tx - cx3) * .06; cy3 += (ty - cy3) * .06;
-    tilt.style.setProperty("--ry", (cx3 * 9).toFixed(2) + "deg"); tilt.style.setProperty("--rx", (-cy3 * 6).toFixed(2) + "deg");
-    if (alive) r3 = requestAnimationFrame(loop3); };
-  if (!reduce) requestAnimationFrame(loop3);
+  const music = CONFIG.splashSound ? Tune.start() : null;
+  el.querySelector(".snd")?.addEventListener("click", (e) => { e.stopPropagation(); music?.toggle(); setTimeout(sync, 150); });
   const cv = el.querySelector("canvas"), cx = cv.getContext("2d"), dpr = Math.min(devicePixelRatio || 1, 2);
   let W, H, raf, alive = true;
   const size = () => { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; };
@@ -389,7 +362,7 @@ function splash() {
   const spr = document.createElement("canvas"); spr.width = spr.height = 32; const sc = spr.getContext("2d");
   const g = sc.createRadialGradient(16, 16, 0, 16, 16, 16); g.addColorStop(0, "rgba(255,240,200,1)"); g.addColorStop(.25, "rgba(255,200,110,.85)"); g.addColorStop(1, "rgba(255,170,60,0)");
   sc.fillStyle = g; sc.fillRect(0, 0, 32, 32);
-  const P = Array.from({ length: 90 }, () => ({ x: Math.random(), y: Math.random(), s: Math.random() * 7 + 3, v: Math.random() * .00045 + .00012, w: Math.random() * 6.28, dw: Math.random() * .03 + .008, a: Math.random() * .6 + .3 }));
+  const P = Array.from({ length: 55 }, () => ({ x: Math.random(), y: Math.random(), s: Math.random() * 5 + 2, v: Math.random() * .00045 + .00012, w: Math.random() * 6.28, dw: Math.random() * .03 + .008, a: Math.random() * .6 + .3 }));
   const tick = () => {
     cx.clearRect(0, 0, W, H); cx.globalCompositeOperation = "lighter";
     for (const p of P) {
@@ -400,8 +373,17 @@ function splash() {
     if (alive) raf = requestAnimationFrame(tick);
   };
   tick();
-  const done = () => { if (!alive) return; alive = false; el.classList.add("out"); setTimeout(() => { cancelAnimationFrame(raf); cancelAnimationFrame(r3); removeEventListener("deviceorientation", ori); el.remove(); }, 900); render(); };
-  el.addEventListener("click", done); setTimeout(done, CONFIG.splashMs);
+  const done = () => { if (!alive) return; alive = false; el.classList.add("out"); music?.stop(); setTimeout(() => { cancelAnimationFrame(raf); el.remove(); }, 900); render(); };
+  const snd = el.querySelector(".snd");
+  const sync = () => snd?.classList.toggle("off", !(music?.started() && music?.on()));
+  setTimeout(sync, 300);
+  // phones block sound until the first touch: first tap turns the tune on, Skip always skips
+  el.addEventListener("click", (e) => {
+    if (e.target.closest(".skip")) return done();
+    if (music && !music.started()) { music.resume(); setTimeout(sync, 200); return; }
+    done();
+  });
+  setTimeout(done, CONFIG.splashMs);
 }
 
 $("#ver").textContent = CONFIG.version;

@@ -1,6 +1,6 @@
 # Aadinath Poly Plast — Webapp
 
-This week's PP bag and flex printing rates. Customers see rates with no login. Admin edits every price.
+This week's bag and flex printing rates. Customers see rates with no login. Admin edits every price.
 
 ## Run it on your PC
 Open a terminal in this folder and run:
@@ -11,17 +11,17 @@ Then open http://localhost:8000 (phone on same Wi-Fi: http://<your-PC-IP>:8000).
 
 ## Admin
 Login -> Admin: PIN `1234` in demo mode; email + password once Firebase is connected.
-- Edit rates: change prices and the "Rates valid for" dates (auto: today till coming Thursday night).
-- Product info, call/WhatsApp number, scrolling notice, About us: on the Admin page.
+- Admin can only change prices and the "Rates valid for" dates (filled in for one week automatically).
+  Names, lists, product info, notice and About are fixed in js/store.js for now.
 
 ## Weekly rates
-Rates run till Thursday 11:59 PM. After that, if the admin has not saved new rates, the app shows
-"Last week's rates" in amber with a Call button, so nobody books on an old rate.
+After the "Till" date passes without new rates, the app shows "Last week's rates" in amber with a Call button.
 
 ## Opening screen
-Aadinath Bhagwan (img/bhagwan.webp, full quality img/bhagwan.png) shows on every open and refresh,
-with glow, gold dust, light sweep and a gentle 3D turn that follows the finger / phone tilt.
-Splash time: CONFIG.splashMs in js/store.js (tap skips).
+Shows on every open and refresh: the picture (img/ganesh.webp) with slow zoom, glow and gold dust,
+plus a soft tune made in the app (js/tune.js, no audio file). On phones the browser allows sound only
+after the first touch, so the first tap turns the tune on; Skip always skips. In the Play Store app the tune
+can start by itself. Turn the tune off: splashSound: false in js/store.js.
 
 ## Contact
 Call + WhatsApp: Ansh, 83208 55756 (default; admin can change it).
@@ -38,3 +38,5 @@ Until step 6, the app runs in demo mode (rates saved only in this browser, PIN 1
 
 Old files no longer used (safe to delete): fonts/manrope-*, fonts/geist-*, fonts/archivo-latin-wdth-italic.woff2,
 fonts/fraunces-latin-standard-italic.woff2, js/weave.js, icons/mark.svg
+
+Not used any more (safe to delete): img/bhagwan.png, img/bhagwan.webp
